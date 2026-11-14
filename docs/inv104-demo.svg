@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 510" width="900" role="img" aria-labelledby="t d">
+<title id="t">pnpm demo:inv104, replayed from the recorded local sandbox transcript</title>
+<desc id="d">Invoice INV-104 is paid to IBAN A. After a "we changed banks" email the supplier is moved to IBAN B; a payout to IBAN B during the cooling-off is refused with ERR_BANK_CHANGE_COOLING_OFF, and INV-104 sent again is refused with ERR_DUPLICATE_INVOICE.</desc>
+<style>text{font:14px ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;fill:#c9d1d9;white-space:pre}.cmd{fill:#ffffff;font-weight:600}.dim{fill:#8b949e}.step{fill:#e6edf3}.ev{fill:#8b949e}.ok{fill:#3fb950;font-weight:600}.no{fill:#ff7b72;font-weight:600}.res{fill:#d2a8ff;font-weight:600}.t{font:12px -apple-system,Segoe UI,Helvetica,Arial,sans-serif;fill:#8b949e}.l{opacity:0;animation-duration:26s;animation-iteration-count:infinite;animation-timing-function:linear}@keyframes k0{0%,1.54%{opacity:0}2.34%,96%{opacity:1}100%{opacity:0}}.l0{animation-name:k0}@keyframes k1{0%,6.15%{opacity:0}6.95%,96%{opacity:1}100%{opacity:0}}.l1{animation-name:k1}@keyframes k2{0%,6.15%{opacity:0}6.95%,96%{opacity:1}100%{opacity:0}}.l2{animation-name:k2}@keyframes k4{0%,11.54%{opacity:0}12.34%,96%{opacity:1}100%{opacity:0}}.l4{animation-name:k4}@keyframes k5{0%,14.62%{opacity:0}15.42%,96%{opacity:1}100%{opacity:0}}.l5{animation-name:k5}@keyframes k6{0%,20.00%{opacity:0}20.80%,96%{opacity:1}100%{opacity:0}}.l6{animation-name:k6}@keyframes k7{0%,23.08%{opacity:0}23.88%,96%{opacity:1}100%{opacity:0}}.l7{animation-name:k7}@keyframes k8{0%,26.54%{opacity:0}27.34%,96%{opacity:1}100%{opacity:0}}.l8{animation-name:k8}@keyframes k9{0%,33.08%{opacity:0}33.88%,96%{opacity:1}100%{opacity:0}}.l9{animation-name:k9}@keyframes k10{0%,36.15%{opacity:0}36.95%,96%{opacity:1}100%{opacity:0}}.l10{animation-name:k10}@keyframes k11{0%,42.31%{opacity:0}43.11%,96%{opacity:1}100%{opacity:0}}.l11{animation-name:k11}@keyframes k12{0%,45.77%{opacity:0}46.57%,96%{opacity:1}100%{opacity:0}}.l12{animation-name:k12}@keyframes k13{0%,49.23%{opacity:0}50.03%,96%{opacity:1}100%{opacity:0}}.l13{animation-name:k13}@keyframes k14{0%,56.15%{opacity:0}56.95%,96%{opacity:1}100%{opacity:0}}.l14{animation-name:k14}@keyframes k15{0%,59.62%{opacity:0}60.42%,96%{opacity:1}100%{opacity:0}}.l15{animation-name:k15}@keyframes k16{0%,63.08%{opacity:0}63.88%,96%{opacity:1}100%{opacity:0}}.l16{animation-name:k16}@keyframes k18{0%,69.23%{opacity:0}70.03%,96%{opacity:1}100%{opacity:0}}.l18{animation-name:k18}@media (prefers-reduced-motion:reduce){.l{animation:none;opacity:1}}</style>
+<rect width="900" height="510" rx="10" fill="#0d1117" stroke="#30363d"/>
+<circle cx="24" cy="22" r="6" fill="#ff5f56"/><circle cx="44" cy="22" r="6" fill="#ffbd2e"/><circle cx="64" cy="22" r="6" fill="#27c93f"/>
+<text class="t" x="450" y="26" text-anchor="middle">pnpm demo:inv104 · replay of demo/evidence/ap1-inv104-local-sandbox.txt (abridged)</text>
+<line x1="0" y1="42" x2="900" y2="42" stroke="#30363d"/>
+<text class="l l0 cmd" x="24" y="74" xml:space="preserve">$ pnpm demo:inv104</text>
+<text class="l l1 dim" x="24" y="96" xml:space="preserve">AP1 INV-104 demo: LOCAL SANDBOX RUN (near-workspaces), NOT TESTNET</text>
+<text class="l l2 dim" x="24" y="118" xml:space="preserve">contract mandate.test.near | agent agent-1 | MPC: mock signer</text>
+<text class="l l4 step" x="24" y="162" xml:space="preserve">[2] Owner registers supplier acme (Acme GmbH, cap 50 EUR) at IBAN A ****3000</text>
+<text class="l l5 ok" x="24" y="184" xml:space="preserve">  outcome: OK</text>
+<text class="l l6 step" x="24" y="206" xml:space="preserve">[3] Agent pays INV-104, EUR 42.50, to IBAN A</text>
+<text class="l l7 ev" x="24" y="228" xml:space="preserve">  event payout_approved</text>
+<text class="l l8 ok" x="24" y="250" xml:space="preserve">  outcome: OK    reservation: Signed (payout order signed by the MPC)</text>
+<text class="l l9 step" x="24" y="272" xml:space="preserve">[4] &quot;We changed banks&quot; email: owner moves acme to IBAN B ****5555</text>
+<text class="l l10 ev" x="24" y="294" xml:space="preserve">  event supplier_iban_pending</text>
+<text class="l l11 step" x="24" y="316" xml:space="preserve">[5] Agent pays INV-105, EUR 10, to IBAN B during the cooling-off</text>
+<text class="l l12 ev" x="24" y="338" xml:space="preserve">  event payout_refused  reason=ERR_BANK_CHANGE_COOLING_OFF</text>
+<text class="l l13 no" x="24" y="360" xml:space="preserve">  outcome: REFUSED ERR_BANK_CHANGE_COOLING_OFF</text>
+<text class="l l14 step" x="24" y="382" xml:space="preserve">[6] Agent pays INV-104 again, EUR 42.50, to IBAN A</text>
+<text class="l l15 ev" x="24" y="404" xml:space="preserve">  event payout_refused  reason=ERR_DUPLICATE_INVOICE</text>
+<text class="l l16 no" x="24" y="426" xml:space="preserve">  outcome: REFUSED ERR_DUPLICATE_INVOICE</text>
+<text class="l l18 res" x="24" y="470" xml:space="preserve">Result: INV-104 paid once; the new IBAN held during the cooling-off; INV-104 again refused.</text>
+</svg>

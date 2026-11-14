@@ -5,6 +5,10 @@ Spending limits for AI agents, enforced by NEAR across crypto and SEPA rails. Gi
 - **The problem:** an agent that pays needs a key, and whoever tricks the agent (a prompt injection, a fake "we changed banks" email) gets everything that key can do.
 - **What nearH does:** the agent's only key can do one thing: ask a NEAR contract to sign a payment. The contract signs only what fits the mandate the owner set (caps, budgets, allowed payees, supplier and invoice rules), and one owner call revokes it on every rail.
 
+![pnpm demo:inv104: INV-104 is paid, the payout to the changed bank account is refused during the cooling-off, and INV-104 sent again is refused](docs/inv104-demo.svg)
+
+A replay of the recorded [local sandbox transcript](demo/evidence/ap1-inv104-local-sandbox.txt), abridged; not a screen capture. Run it yourself in [Try it](#try-it), step 2.
+
 An entry for the NEAR hackathon (Nov 1–14, 2026), primary track AI Security & Defense. Testnets and sandboxes only: NEAR testnet, Base Sepolia and the Monerium sandbox.
 
 **Contents:** [What it stops](#what-it-stops) · [Try it](#try-it) · [What it does](#what-it-does) · [Status](#status) · [Privacy](#privacy) · [Run it with IronClaw](#run-it-with-ironclaw) · [Next to NEAR's Agent API](#next-to-nears-agent-api) · [Layout](#layout) · [Libraries and tools used](#libraries-and-tools-used)
@@ -67,6 +71,16 @@ It runs in the near-workspaces sandbox, also with no `.env`, and prints every co
 
 ## What it does
 
+```mermaid
+flowchart LR
+  O["Owner<br/>passkey"] -- "sets the mandate,<br/>revokes" --> C
+  A["AI agent<br/>one function-call key"] -- "asks for a signature" --> C{{"Mandate contract on NEAR<br/>caps, budgets, payees, invoices"}}
+  C -- "fits the mandate" --> M["NEAR Chain Signatures<br/>(MPC)"]
+  C -- "does not fit" --> R["refused,<br/>with a reason code"]
+  M -- "signed x402 payment" --> X["USDC on Base Sepolia"]
+  M -- "signed payout order" --> S["Monerium EURe (SEPA)"]
+```
+
 - **The agent holds no key to funds.** Its only key is a NEAR function-call key that can do one thing: ask the mandate contract to sign a payment. Its MCP tools are `pay_x402`, `pay_sepa`, `revoke` and `get_receipt`.
 - **The contract signs only what fits the mandate:** caps, a budget per rail, allowed payees, and a short validity window. It signs through NEAR Chain Signatures and builds every message itself, so nothing is signed blind. It signs four kinds of message: an x402 USDC payment, a SEPA payout order, a sweep that moves the agent's leftover funds back to the owner's Safe, and an owner-only message that links the agent's address to Monerium.
 - **Two rails, one policy:**
@@ -112,12 +126,7 @@ Every claim below links to its transcript or record in [demo/evidence](demo/evid
 ## Privacy
 - **Private payee book:** the contract stores each supplier IBAN only as a salted hash (`sha256(domain, salt, IBAN)`, with a random 256-bit salt per IBAN kept off-chain by the owner, agent and rail). This hides unused payees, not who an individual payment went to (see the main SEPA path below). A salted hash is pseudonymised data, not anonymous; production needs confidential execution (TEE). Removing a supplier and deleting its salt off-chain leaves an on-chain commitment that can no longer be linked to the IBAN. Only sandbox and documentation IBANs are used.
 - **Main SEPA path:** the agent sends the IBAN and its salt, the contract opens the supplier's commitment and renders `Send EUR {amount} to {iban} at {time}` itself. The IBAN is therefore visible in that request's arguments and in the signed message, whose hash is stored.
-- **Private SEPA path (opt-in per supplier, contract code only):** the request carries only the supplier, its IBAN commitment, the amount, the invoice id and amount, and the timestamp, never the IBAN.
-  - The contract runs the same supplier and invoice checks as the main path (cooling-off, each invoice paid once across both paths, supplier and per-payment caps, budget).
-  - It then calls an OutLayer worker whose code hash is pinned in the contract config, settable only with the owner passkey. The worker reads the IBAN and salt from its encrypted secrets, checks them against the commitment, builds the order text from the fixed template and returns only the text's hash, signed with a key OutLayer derives inside its TEE from (code hash, this contract).
-  - The contract checks that signature against the pinned key before asking Chain Signatures to sign the hash; a missing, failed or unverified result signs nothing.
-  - **On this path the contract does not see the message; it trusts attested, pinned TEE code to build it from a fixed template.** The trust moves to OutLayer's keystore and TEE (see [spikes/outlayer/RESULT.md](spikes/outlayer/RESULT.md) for what is and is not proven).
-  - Of the worker, only its template builder (`contract/priv2-worker/`) exists. No private-path payout has run live; the worker entry point and a testnet run are on the roadmap.
+- **Private SEPA path (roadmap):** an opt-in path where the request never carries the IBAN. The contract runs the same supplier and invoice checks, then has a pinned OutLayer TEE worker build the order text and return only its signed hash. The contract side and its 18 tests exist, and of the worker only the template builder (`contract/priv2-worker/`); no private-path payout has run. Design, trust assumptions and limits: [threat model §4.8](docs/threat-model.md) and [spikes/outlayer/RESULT.md](spikes/outlayer/RESULT.md).
 
 ## Run it with IronClaw
 
