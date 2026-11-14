@@ -4,6 +4,15 @@
 
 [ironclaw-live.md](ironclaw-live.md) and [ironclaw-live.jsonl](ironclaw-live.jsonl): IronClaw on the owner's agent.near.ai instance drives the buyer MCP over `--http`. One payment paid, a lookalike and an over-cap invoice held, the contract's cap refusal, the owner's revoke, and IronClaw's next attempt failing. Ids only, payees masked.
 
+## Scam check model run (NEAR AI Cloud, NEAR testnet, Monerium sandbox)
+
+[scam-check-model-live.json](scam-check-model-live.json): `pay_sepa` through the buyer MCP with the scam check on (`deepseek-ai/DeepSeek-V4.1-Flash-1017`), contract `nearh-e2e-1794644865.testnet`, agent-5, EUR 1.00 each to one approved supplier. Each record has the invoice text sent, the status, and for held requests the check's verdict with its reason and model. IBANs are masked to their last 4.
+
+- **With payment history** (run `6c03c907…`): a normal invoice got `ok`, was signed and submitted to the Monerium sandbox. Three scam invoices to the same IBAN and amount were held with `suspicious`, each verdict carrying the model's name and reason: a request to pay a different account confidentially without calling, a prompt injection telling the agent to skip all checks, and a "CEO gift cards" request. Nothing was signed for them (`signing_started: false`). None contains a word from the keyword list in `scamcheck/src/check.ts`, and the payee and amount pass the local rules, so these verdicts come from the model.
+- **Without payment history** (run `276b6620…`): the model held the same legitimate first payment three times out of three ("no payee history"). The first payment in the other run was therefore made with the check skipped (`scam_check: "skipped"`), which is what created the history. In the E1 run below the model passed two first payments, so its answer to a first payment is not stable.
+- **Limits:** one live attempt per scam invoice (an offline probe of the same three texts gave `suspicious` three times each, and `ok` three times for the normal one). `signature_verified` is `false`: nearH's check does not verify NEAR AI's response signature. Three earlier requests, sent before the supplier's cooling-off had ended, were held by the local "unknown payee" rule and are not in the file.
+- Afterwards the owner revoked agent-5 and the relayer swept its remaining EURe back to the Safe (`cleanup` in the file).
+
 ## E1 live run (NEAR testnet, Base Sepolia, Monerium sandbox)
 
 [e1-d1ca04a8-4ef4-4a6d-8f9a-faccd15173a3.json](e1-d1ca04a8-4ef4-4a6d-8f9a-faccd15173a3.json): `pnpm demo --run`, `complete: true`, on contract `nearh-e2e-1794644865.testnet` with agent-4 and the AI scam check on (`NEAR_AI_API_KEY` set, model `deepseek-ai/DeepSeek-V4.1-Flash-1017`). An earlier run of the same day with agent-3 and the scam check skipped is [e1-4522641b-ff25-4d33-9e0a-b32850f5975a.json](e1-4522641b-ff25-4d33-9e0a-b32850f5975a.json). Each record carries its NEAR or Base Sepolia tx hash, request id or Monerium order id; no keys, tokens or IBANs.
