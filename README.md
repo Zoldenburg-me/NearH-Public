@@ -7,7 +7,22 @@ Spending limits for AI agents, enforced by NEAR across crypto and SEPA rails. Gi
 
 An entry for the NEAR hackathon (Nov 1–14, 2026), primary track AI Security & Defense. Testnets and sandboxes only: NEAR testnet, Base Sepolia and the Monerium sandbox.
 
-**Contents:** [Try it](#try-it) · [What it does](#what-it-does) · [Status](#status) · [Privacy](#privacy) · [Run it with IronClaw](#run-it-with-ironclaw) · [Next to NEAR's Agent API](#next-to-nears-agent-api) · [Layout](#layout) · [Libraries and tools used](#libraries-and-tools-used)
+**Contents:** [What it stops](#what-it-stops) · [Try it](#try-it) · [What it does](#what-it-does) · [Status](#status) · [Privacy](#privacy) · [Run it with IronClaw](#run-it-with-ironclaw) · [Next to NEAR's Agent API](#next-to-nears-agent-api) · [Layout](#layout) · [Libraries and tools used](#libraries-and-tools-used)
+
+## What it stops
+
+Each row is a transaction on NEAR testnet, sent with the agent's own key: what an attacker in full control of the agent could do. Open the link to see the contract's refusal.
+
+| Attack | Contract's answer | Transaction |
+|---|---|---|
+| "We changed banks": pay the supplier's new IBAN right after the change | refused, `ERR_BANK_CHANGE_COOLING_OFF` | [`Dn7x8A…`](https://testnet.nearblocks.io/txns/Dn7x8AXGatXTSKrkY7pPBzNGgXkNdnY8Df3kabyQYasq) |
+| The same invoice sent a second time | refused, `ERR_DUPLICATE_INVOICE` | [`AWQxox…`](https://testnet.nearblocks.io/txns/AWQxoxwLf3B5RBNJRFxG3ob6nFxX31AJLKanyAH3i3Nr) |
+| A poisoned invoice that names a payee not on the list | refused, `ERR_PAYEE_NOT_ALLOWED` | [`4CSsAU…`](https://testnet.nearblocks.io/txns/4CSsAUYNv2yQCmercj7PFbryFhtafL3K7dTP9886odJJ) |
+| Another payment while the budget is already reserved | refused, `ERR_OVER_BUDGET` | [`9YiBNW…`](https://testnet.nearblocks.io/txns/9YiBNWgKDBPw1jQdskBirtzXAU1AddGocV18SL6Z2yQK) |
+| A payment above the per-payment cap, with the AI scam check bypassed | refused, `ERR_OVER_PER_PAYMENT_CAP` | [`5JYnwQ…`](https://testnet.nearblocks.io/txns/5JYnwQtDLmV2zwB8jXqrZGbymKqH8D8ua457DQSPCome) (nearh-paypal's contract, the same mandate engine) |
+| Keep paying after the owner revokes | the revoke clears the mandate and deletes the agent's key, so the next request cannot be signed | [`C4QJp3…`](https://testnet.nearblocks.io/txns/C4QJp3NdTAG81U86pBYRLKtLLUHQ5U8REL39SQx35Bss) (the revoke) |
+
+The first two rows are from the [AP1 testnet run](demo/evidence/ap1-inv104-testnet.txt), the next two and the revoke from the [E1 live run](demo/evidence/README.md#e1-live-run-near-testnet-base-sepolia-monerium-sandbox), and the cap row from the [IronClaw run](demo/evidence/ironclaw-live.md). What each run did not cover is under [Status](#status).
 
 ## Try it
 From a fresh clone, with no `.env` and no accounts.
