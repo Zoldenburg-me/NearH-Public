@@ -166,8 +166,44 @@ function deterministicCheck(params: CheckParams, now: number): Verdict | null {
 // The model provider must not learn a supplier's IBAN or its salt (the payee book is private, PRIV1).
 // An IBAN goes into the prompt as `****` plus its last 4 characters, the salt not at all.
 const maskIban = (iban: string) => `****${iban.replace(/[\s-]/g, "").slice(-4)}`;
-const IBAN_IN_TEXT = /\b[A-Z]{2}[0-9]{2}(?:[ -]?[A-Z0-9]){11,30}\b/g;
-const maskIbansInText = (text: string) => text.replace(IBAN_IN_TEXT, m => maskIban(m));
+// IBAN length per country (SEPA area), so a spaced IBAN ends where the IBAN ends and the words
+// after it ("EUR 42.50") are left alone. Other country codes are masked only when written without spaces.
+const IBAN_LENGTHS: Record<string, number> = {
+  AD: 24, AT: 20, BE: 16, BG: 22, CH: 21, CY: 28, CZ: 24, DE: 22, DK: 18, EE: 20, ES: 24, FI: 18, FR: 27,
+  GB: 22, GI: 23, GR: 27, HR: 21, HU: 28, IE: 22, IS: 26, IT: 27, LI: 21, LT: 20, LU: 20, LV: 21, MC: 27,
+  MT: 31, NL: 18, NO: 15, PL: 28, PT: 25, RO: 24, SE: 24, SI: 19, SK: 24, SM: 27, VA: 22,
+};
+const isIbanChar = (c: string | undefined) => c !== undefined && /[A-Z0-9]/.test(c);
+
+/** Masks IBANs in free text: exact length (single spaces or dashes allowed) for known countries, else an unspaced run. */
+export function maskIbansInText(text: string): string {
+  let out = "";
+  let done = 0;
+  for (const m of text.matchAll(/\b[A-Z]{2}[0-9]{2}/g)) {
+    const start = m.index;
+    if (start < done) continue;
+    let end: number | undefined;
+    const len = IBAN_LENGTHS[m[0].slice(0, 2)];
+    if (len) {
+      let n = 0;
+      let j = start;
+      while (j < text.length && n < len) {
+        if (isIbanChar(text[j])) { n++; j++; }
+        else if ((text[j] === " " || text[j] === "-") && isIbanChar(text[j + 1])) j++;
+        else break;
+      }
+      if (n === len && !isIbanChar(text[j])) end = j;
+    }
+    if (end === undefined) {
+      const run = /^[A-Z]{2}[0-9]{2}[A-Z0-9]{11,30}(?![A-Z0-9])/.exec(text.slice(start));
+      if (run) end = start + run[0].length;
+    }
+    if (end === undefined) continue;
+    out += text.slice(done, start) + maskIban(text.slice(start, end));
+    done = end;
+  }
+  return out + text.slice(done);
+}
 
 /** The payment data the model sees: no salt, IBANs masked, each history entry marked as this payee or not. */
 export function promptPaymentData(params: CheckParams): Record<string, unknown> {

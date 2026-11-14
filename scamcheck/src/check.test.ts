@@ -8,6 +8,7 @@ import {
   checkScam,
   checkAndHold,
   buildPrompt,
+  maskIbansInText,
   heldPath,
   readHeldQueue,
   type CheckParams,
@@ -448,4 +449,14 @@ test("an x402 payTo address is public and stays in the prompt", () => {
     payee_history: [{ payee: payTo.toLowerCase(), amounts: ["10000"], last_seen: "2026-11-01" }] }));
   assert.ok(prompt.includes(payTo));
   assert.match(prompt, /"same_as_current_payee": true/);
+});
+
+test("masking an IBAN in text leaves the words after it alone", () => {
+  assert.equal(maskIbansInText("Pay DE89370400440532013000 EUR 42.50"), "Pay ****3000 EUR 42.50");
+  assert.equal(maskIbansInText("Pay DE89 3704 0044 0532 0130 00 EUR 42.50 today"), "Pay ****3000 EUR 42.50 today");
+  assert.equal(maskIbansInText("IBAN GB33-BUKB-2020-1555-5555-55, ref INV 2026 0001"), "IBAN ****5555, ref INV 2026 0001");
+  assert.equal(maskIbansInText("NL91 ABNA 0417 1643 00 42 units"), "****4300 42 units");
+  assert.equal(maskIbansInText("to XX00FIXTURE0003000 EUR 10"), "to ****3000 EUR 10");
+  assert.equal(maskIbansInText("DE89370400440532013000 and GB33BUKB20201555555555"), "****3000 and ****5555");
+  assert.equal(maskIbansInText("Invoice INV-104, order AB12 for EUR 42.50"), "Invoice INV-104, order AB12 for EUR 42.50");
 });
