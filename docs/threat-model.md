@@ -30,7 +30,7 @@ Test locations:
 | **Malicious supplier / invoice sender** | Nothing. | Invoice text, invoice ids, amounts, and "our bank details changed" requests. |
 | **Relayer** (`set_relayer` account, `relayer/`) | Submitting transactions and paying gas. | Not trusted to choose destinations, amounts or owner call arguments; the contract and the relayer's own checks bound what it can do (§4.10). |
 | **Monerium** (sandbox) | Holding EURe and executing orders the agent EOA signed. | It is a custodian outside the contract's control. |
-| **NEAR AI scam check** (`scamcheck/`) | Nothing; it is advisory. | Its verdict is not attested (`signature_verified: false`) and it runs inside the agent's own process. |
+| **NEAR AI scam check** (`scamcheck/`) | Nothing; it is advisory. | It is sent each request without the salt and with IBANs masked to their last 4 (`promptPaymentData`), so NEAR AI sees the supplier id, amount, invoice text and payment history, not the IBAN. Its verdict is not attested (`signature_verified: false`) and it runs inside the agent's own process. |
 | **OutLayer** (PRIV2 TEE) | Running the pinned worker code honestly, and keeping its secrets. | The contract checks that the worker's signature is from the pinned key over request-bound fields. It cannot check that the digest is of the right IBAN (§4.8). |
 | **NEAR MPC** (`v1.signer-prod.testnet`) | Signing only what the contract asks for, under the agent's derivation path. | Each signature is checked by `ecrecover` against the agent EOA before the contract records it. |
 

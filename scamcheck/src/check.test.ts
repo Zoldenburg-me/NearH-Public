@@ -7,6 +7,7 @@ import { tmpdir } from "node:os";
 import {
   checkScam,
   checkAndHold,
+  buildPrompt,
   heldPath,
   readHeldQueue,
   type CheckParams,
@@ -392,4 +393,59 @@ test("last_seen more than a day in the future holds the request", async () => {
   } finally {
     restoreEnv("NEAR_AI_API_KEY", prev);
   }
+});
+
+const SALT = "0x" + "5f".repeat(32);
+const sepaParams = (overrides: Partial<CheckParams> = {}) => makeParams({
+  shape: { type: "payout", supplier: "acme", iban: "DE89 3704 0044 0532 0130 00", salt: SALT, amount: "42.50", invoice_id: "INV-104", invoice_amount: "42.50" },
+  ...overrides,
+});
+
+test("the request sent to the model carries no full IBAN and no salt", async () => {
+  const prev = process.env.NEAR_AI_API_KEY;
+  process.env.NEAR_AI_API_KEY = "test-key";
+  let sent = "";
+  const mockFetch = async (_url: unknown, init?: { body?: unknown }) => {
+    sent = String(init?.body);
+    return new Response(JSON.stringify({ choices: [{ message: { content: '{"result":"ok","reason":"fine"}' } }] }), { status: 200 });
+  };
+  try {
+    await checkScam(sepaParams({
+      memo: "ref DE89370400440532013000",
+      invoice: { text: "Please pay to DE89 3704 0044 0532 0130 00 or GB33BUKB20201555555555.", source: "email" },
+      payee_history: [{ payee: "DE89370400440532013000", amounts: ["40"], last_seen: "2026-11-01" }],
+    }), { fetch: mockFetch as typeof globalThis.fetch });
+  } finally {
+    restoreEnv("NEAR_AI_API_KEY", prev);
+  }
+  assert.ok(sent.length > 0, "the model was called");
+  const compact = sent.replace(/[\s-]/g, "");
+  assert.ok(!compact.includes("DE89370400440532013000"), "the payee IBAN is not in the request");
+  assert.ok(!compact.includes("GB33BUKB20201555555555"), "an IBAN in the invoice text is not in the request");
+  assert.ok(!sent.includes(SALT) && !sent.includes(SALT.slice(2)), "the salt is not in the request");
+  assert.ok(sent.includes("****3000") && sent.includes("****5555"), "the last 4 characters are");
+});
+
+test("the prompt marks which history entries are this payee and says an owner-approved first payment is normal", () => {
+  const prompt = buildPrompt(sepaParams({
+    payee_history: [
+      { payee: "DE89370400440532013000", amounts: ["40"], last_seen: "2026-11-01" },
+      { payee: "GB33BUKB20201555555555", amounts: ["10"], last_seen: "2026-11-02" },
+    ],
+  }));
+  const data = JSON.parse(prompt.slice(prompt.indexOf("{"), prompt.indexOf("\n\nInvoice details")));
+  assert.deepEqual(data.payee_history.map((e: { payee: string; same_as_current_payee: boolean }) => [e.payee, e.same_as_current_payee]),
+    [["****3000", true], ["****5555", false]]);
+  assert.equal(data.shape.iban, "****3000");
+  assert.equal("salt" in data.shape, false);
+  assert.match(prompt, /owner has approved this payee/);
+  assert.match(prompt, /first payment to an owner-approved payee is not a red flag by itself/);
+});
+
+test("an x402 payTo address is public and stays in the prompt", () => {
+  const payTo = "0x35480C5ac634ccE6976E18E0Bd605d1c5c7A53af";
+  const prompt = buildPrompt(makeParams({ rail: "x402", shape: { type: "x402", payTo, amount: "10000" },
+    payee_history: [{ payee: payTo.toLowerCase(), amounts: ["10000"], last_seen: "2026-11-01" }] }));
+  assert.ok(prompt.includes(payTo));
+  assert.match(prompt, /"same_as_current_payee": true/);
 });
