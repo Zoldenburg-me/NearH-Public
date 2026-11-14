@@ -10,7 +10,7 @@
 
 - Owner: `set_mandate`, then USDC and EURe top-ups from the Safe `0x262F…83AF` to the agent EOA.
 - Agent: one x402 purchase, settled in USDC; one EUR 1.00 SEPA payout order submitted to the Monerium sandbox (not bank settlement).
-- Held by the scam check: a SEPA payout to a changed bank account with urgent wording (`poisoned-invoice`, `held`, verdict "urgency wording in invoice text"); nothing was signed and no request reached the contract. The two real payments above passed the check.
+- Held by the scam check: a SEPA payout to a changed bank account with urgent wording (`poisoned-invoice`, `held`); nothing was signed and no request reached the contract. The verdict, "urgency wording in invoice text", is kept in the private held queue and receipt, not in the evidence file. It comes from the check's local keyword rule (`deterministicCheck`), which runs before the model, so the model was not asked about this invoice. The model answered `ok` for the two real payments above (`scam_check: "ok"` in their private receipts).
 - Refused by the contract: a payment to an unlisted payee (`ERR_PAYEE_NOT_ALLOWED`), a second request while the first was still pending (`ERR_OVER_BUDGET`), and a payment after the owner's revoke.
 - Sweeps: the agent's USDC (owner-requested, submitted by the relayer) and EURe (relayer-requested, gas funded by the relayer) back to the Safe.
 

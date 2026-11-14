@@ -17,7 +17,7 @@ Each row is a transaction on NEAR testnet, sent with the agent's own key: what a
 |---|---|---|
 | "We changed banks": pay the supplier's new IBAN right after the change | refused, `ERR_BANK_CHANGE_COOLING_OFF` | [`Dn7x8A…`](https://testnet.nearblocks.io/txns/Dn7x8AXGatXTSKrkY7pPBzNGgXkNdnY8Df3kabyQYasq) |
 | The same invoice sent a second time | refused, `ERR_DUPLICATE_INVOICE` | [`AWQxox…`](https://testnet.nearblocks.io/txns/AWQxoxwLf3B5RBNJRFxG3ob6nFxX31AJLKanyAH3i3Nr) |
-| An urgent "pay this changed bank account" invoice, with the AI scam check on | held for the owner before any signing (`urgency wording in invoice text`) | none: it never reached the contract (request `pay-9938c1c3…` in the E1 record) |
+| An urgent "pay this changed bank account" invoice, with the scam check on | held for the owner before any signing, by the scam check's keyword rule (`urgency wording in invoice text`); the model was not asked | none: it never reached the contract (request `pay-9938c1c3…` in the E1 record) |
 | A poisoned invoice that names a payee not on the list | refused, `ERR_PAYEE_NOT_ALLOWED` | [`D2LDME…`](https://testnet.nearblocks.io/txns/D2LDMEvfagrWrhpNgCsnhmtunfsZszLtQPbAxtBdEGCh) |
 | Another payment while the budget is already reserved | refused, `ERR_OVER_BUDGET` | [`8Y364Q…`](https://testnet.nearblocks.io/txns/8Y364QEpMub11rLZv7GwNFFU7qx3iHgsXif5EGqFqRnk) |
 | A payment above the per-payment cap, with the AI scam check bypassed | refused, `ERR_OVER_PER_PAYMENT_CAP` | [`5JYnwQ…`](https://testnet.nearblocks.io/txns/5JYnwQtDLmV2zwB8jXqrZGbymKqH8D8ua457DQSPCome) (nearh-paypal's contract, the same mandate engine) |
@@ -100,7 +100,7 @@ Every claim below links to its transcript or record in [demo/evidence](demo/evid
   - It ran Safe top-ups, one x402 payment settled in USDC, and one EUR 1.00 SEPA payout order submitted to the Monerium sandbox (sandbox, not bank settlement).
   - The contract refused an unlisted payee, an over-budget request and a payment after revoke. Then both floats were swept back to the Safe.
   - Owner calls were signed with the software owner key, not a browser passkey. The Safe top-ups were made by a throwaway EOA added as a Safe owner.
-  - The AI scam check was on (NEAR AI Cloud, `deepseek-ai/DeepSeek-V4.1-Flash-1017`). It passed the two real payments and held the poisoned bank-change invoice before any signing; the contract then refused the unlisted payee on its own.
+  - The scam check was on. The NEAR AI Cloud model (`deepseek-ai/DeepSeek-V4.1-Flash-1017`) answered `ok` for the two real payments. The poisoned bank-change invoice was held before any signing by the check's local urgency-wording rule, which runs before the model, so this run does not show the model itself catching a scam. The contract then refused the unlisted payee on its own.
 - **AP1 on testnet:** payouts were signed by the MPC, not sent to Monerium.
 - **IronClaw:**
   - IronClaw on NEAR AI Cloud paid one PayPal-sandbox invoice through the buyer MCP over `--http`.
