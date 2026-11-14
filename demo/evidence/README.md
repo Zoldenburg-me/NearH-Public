@@ -4,6 +4,16 @@
 
 [ironclaw-live.md](ironclaw-live.md) and [ironclaw-live.jsonl](ironclaw-live.jsonl): IronClaw on the owner's agent.near.ai instance drives the buyer MCP over `--http`. One payment paid, a lookalike and an over-cap invoice held, the contract's cap refusal, the owner's revoke, and IronClaw's next attempt failing. Ids only, payees masked.
 
+### Screen recording of a second run (Nov 14)
+
+[ironclaw-live-nov14.mp4](ironclaw-live-nov14.mp4): the owner typed the same five prompts into the IronClaw WebUI and recorded the screen. The file is a 78 s cut of a 6 min 10 s recording: waits are sped up (the factor is shown), a caption band is added on top, and the sandbox payee address is masked. Fresh agent `ironclaw-2` on the same contract (`nearh-ph2-1794482268.testnet`) and mandate, the same four sandbox invoices, nearh-paypal's buyer MCP.
+
+- **Paid once:** USD 84, request `pay-83c626ab-b2fc-415e-842f-5f2689f705df`, NEAR tx `6SPZHJLqr5AMGcC2qfDdDL9XQ27o5apn3bqjeNszqQ9W`, PayPal payout batch `FFCVAN3VK6P6U` (PENDING when recorded). As on Nov 13, IronClaw's first call ended in its own `network_error` after about 30 s while the payout was running, and its retry was blocked with `DUPLICATE_INVOICE`.
+- **Held by the scam check, nothing signed:** the lookalike shop, USD 39 (`pay-78ebb877-c2f7-483d-8deb-c5bb98f5c32d`, "unknown payee"), and the USD 149 invoice (`pay-b606ff94-3e16-4581-a4c6-723c99178d1d`, "changed PayPal payee").
+- **After the revoke:** the USD 12 request (`pay-917729c0-c503-47e5-b321-96921633127a`) was created at 16:52:58Z and passed the scam check; the owner's revoke landed at 16:53:09Z (NEAR tx `Yntcg3HKhs6uqaKqN6mCkbXiVbyCGrBc1JSiYRVVpJg`) and deleted the agent's key, so NEAR rejected the agent's transaction with `AccessKeyNotFound`. The receipt is `unknown` / `uncertain`; nothing was submitted to PayPal.
+- **Not in the video:** the owner steps ran from a script between prompts 4 and 5. The USD 149 payment sent straight to the contract with the agent's key was refused with `ERR_OVER_PER_PAYMENT_CAP` (NEAR tx `3qcPEgRdgDvCdsdFntCbppvRtxGJ44Gr5CXMuMKnrX9H`), then the revoke.
+- **Limits:** there is no jsonl transcript for this run; the video and the transactions above are the record. The holds are the scam check's, not the contract's.
+
 ## Scam check model run (NEAR AI Cloud, NEAR testnet, Monerium sandbox)
 
 [scam-check-model-live.json](scam-check-model-live.json): `pay_sepa` through the buyer MCP with the scam check on (`deepseek-ai/DeepSeek-V4.1-Flash-1017`), contract `nearh-e2e-1794644865.testnet`, agent-5, EUR 1.00 each to one approved supplier. Each record has the invoice text sent, the status, and for held requests the check's verdict with its reason and model. IBANs are masked to their last 4.
