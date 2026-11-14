@@ -1,0 +1,19 @@
+[package]
+name = "ol-iban-worker-signed"
+version = "0.1.0"
+edition = "2021"
+publish = false
+
+# Standalone spike: not a member of any root workspace.
+[workspace]
+
+[dependencies]
+serde_json = "1"
+sha2 = "0.10"
+# signing-keys is not in the crates.io release (0.2.1): vendored from out-layer/outlayer@3079d756 sdk/outlayer (MIT/Apache-2.0)
+outlayer = { path = "../vendor/outlayer-sdk", features = ["signing-keys"] }
+
+[profile.release]
+opt-level = "s"
+lto = true
+strip = true

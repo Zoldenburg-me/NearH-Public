@@ -1,0 +1,28 @@
+{
+  "name": "@nearh/demo",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=22.18"
+  },
+  "scripts": {
+    "inv104": "node --env-file-if-exists=../.env --env-file-if-exists=.env ap1-inv104.ts",
+    "test": "pnpm run typecheck && node --test \"test/**/*.test.ts\"",
+    "typecheck": "tsc --noEmit",
+    "e1:check": "node --env-file-if-exists=../.env --env-file-if-exists=.env src/e1-check.ts",
+    "lint": "tsc --noEmit --noUnusedLocals --noUnusedParameters",
+    "e1": "node --env-file-if-exists=../.env --env-file-if-exists=.env src/e1.ts"
+  },
+  "dependencies": {
+    "@nearh/agent-signer": "workspace:*",
+    "@nearh/owner-near": "workspace:*",
+    "@noble/hashes": "^2.4.0",
+    "@modelcontextprotocol/sdk": "1.32.2",
+    "@nearh/agent-mcp": "workspace:*",
+    "viem": "2.57.16"
+  },
+  "devDependencies": {
+    "@types/node": "^22.20.5",
+    "typescript": "^5.9.3"
+  }
+}

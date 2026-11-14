@@ -1,0 +1,96 @@
+{
+  "source": "fixture",
+  "note": "Recorded example events, not a NEAR testnet run. The story mirrors the sandbox test inv_104_bank_change_is_held_and_the_invoice_paid_once (contract/tests/integration/tests/t2_adversarial.rs) with a 60 s cooling-off; tx hashes and receipt ids are placeholders. IBANs are fake (country XX), so the salt book holds no real or documentation IBAN.",
+  "contract": "fixture-mandate.testnet",
+  "receipts": [
+    {
+      "tx_hash": "FIXTURE-TX-01",
+      "receipt_id": "FIXTURE-RECEIPT-01",
+      "block_height": 250000000,
+      "block_timestamp_ns": "1794218400000000000",
+      "status": "success",
+      "failure": null,
+      "logs": [
+        "EVENT_JSON:{\"standard\":\"zold-mandate\",\"version\":\"1.0.0\",\"event\":\"payee_added\",\"data\":{\"agent\":\"agent-1\",\"payee\":{\"rail\":\"sepa\",\"supplier\":\"acme\",\"name\":\"Acme GmbH\",\"iban_commitment\":\"0x10daf09978b3fc76d75972013492dbcca617e28738f9352bd42219e1c4f375c9\",\"cap\":\"50000000000000000000\"}}}",
+        "EVENT_JSON:{\"standard\":\"zold-mandate\",\"version\":\"1.0.0\",\"event\":\"supplier_iban_pending\",\"data\":{\"agent\":\"agent-1\",\"supplier\":\"acme\",\"iban_commitment\":\"0x10daf09978b3fc76d75972013492dbcca617e28738f9352bd42219e1c4f375c9\",\"effective_at\":1794218460}}"
+      ]
+    },
+    {
+      "tx_hash": "FIXTURE-TX-02",
+      "receipt_id": "FIXTURE-RECEIPT-02",
+      "block_height": 250000061,
+      "block_timestamp_ns": "1794218461000000000",
+      "status": "success",
+      "failure": null,
+      "logs": [
+        "EVENT_JSON:{\"standard\":\"zold-mandate\",\"version\":\"1.0.0\",\"event\":\"payout_approved\",\"data\":{\"key\":{\"agent\":\"agent-1\",\"caller\":{\"kind\":\"agent\"},\"request_id\":\"inv-104-a\"},\"supplier\":\"acme\",\"invoice_id\":\"INV-104\",\"amount\":\"42.5\",\"invoice_amount\":\"42.5\"}}"
+      ]
+    },
+    {
+      "tx_hash": "FIXTURE-TX-03",
+      "receipt_id": "FIXTURE-RECEIPT-03",
+      "block_height": 250000070,
+      "block_timestamp_ns": "1794218470000000000",
+      "status": "success",
+      "failure": null,
+      "logs": [
+        "EVENT_JSON:{\"standard\":\"zold-mandate\",\"version\":\"1.0.0\",\"event\":\"supplier_iban_pending\",\"data\":{\"agent\":\"agent-1\",\"supplier\":\"acme\",\"iban_commitment\":\"0xb3ec22de01afeaf646bf1ba44f082944554b8a492fe6097e294f65db44082154\",\"effective_at\":1794218530}}"
+      ]
+    },
+    {
+      "tx_hash": "FIXTURE-TX-04",
+      "receipt_id": "FIXTURE-RECEIPT-04",
+      "block_height": 250000075,
+      "block_timestamp_ns": "1794218475000000000",
+      "status": "failure",
+      "failure": "{\"ActionError\":{\"index\":0,\"kind\":{\"FunctionCallError\":{\"ExecutionError\":\"Smart contract panicked: ERR_BANK_CHANGE_COOLING_OFF: iban\"}}}}",
+      "logs": [
+        "EVENT_JSON:{\"standard\":\"zold-mandate\",\"version\":\"1.0.0\",\"event\":\"payout_refused\",\"data\":{\"key\":{\"agent\":\"agent-1\",\"caller\":{\"kind\":\"agent\"},\"request_id\":\"held-105\"},\"supplier\":\"acme\",\"invoice_id\":\"INV-105\",\"reason\":\"ERR_BANK_CHANGE_COOLING_OFF\"}}"
+      ]
+    },
+    {
+      "tx_hash": "FIXTURE-TX-05",
+      "receipt_id": "FIXTURE-RECEIPT-05",
+      "block_height": 250000076,
+      "block_timestamp_ns": "1794218476000000000",
+      "status": "failure",
+      "failure": "{\"ActionError\":{\"index\":0,\"kind\":{\"FunctionCallError\":{\"ExecutionError\":\"Smart contract panicked: ERR_DUPLICATE_INVOICE: supplier and invoice_id already paid\"}}}}",
+      "logs": [
+        "EVENT_JSON:{\"standard\":\"zold-mandate\",\"version\":\"1.0.0\",\"event\":\"payout_refused\",\"data\":{\"key\":{\"agent\":\"agent-1\",\"caller\":{\"kind\":\"agent\"},\"request_id\":\"again-104\"},\"supplier\":\"acme\",\"invoice_id\":\"INV-104\",\"reason\":\"ERR_DUPLICATE_INVOICE\"}}"
+      ]
+    },
+    {
+      "tx_hash": "FIXTURE-TX-06",
+      "receipt_id": "FIXTURE-RECEIPT-06",
+      "block_height": 250000080,
+      "block_timestamp_ns": "1794218480000000000",
+      "status": "success",
+      "failure": null,
+      "logs": [
+        "EVENT_JSON:{\"standard\":\"zold-mandate\",\"version\":\"1.0.0\",\"event\":\"payout_approved\",\"data\":{\"key\":{\"agent\":\"agent-1\",\"caller\":{\"kind\":\"agent\"},\"request_id\":\"old-106\"},\"supplier\":\"acme\",\"invoice_id\":\"INV-106\",\"amount\":\"1\",\"invoice_amount\":\"1\"}}"
+      ]
+    },
+    {
+      "tx_hash": "FIXTURE-TX-07",
+      "receipt_id": "FIXTURE-RECEIPT-07",
+      "block_height": 250000140,
+      "block_timestamp_ns": "1794218540000000000",
+      "status": "success",
+      "failure": null,
+      "logs": [
+        "EVENT_JSON:{\"standard\":\"zold-mandate\",\"version\":\"1.0.0\",\"event\":\"payout_approved\",\"data\":{\"key\":{\"agent\":\"agent-1\",\"caller\":{\"kind\":\"agent\"},\"request_id\":\"new-107\"},\"supplier\":\"acme\",\"invoice_id\":\"INV-107\",\"amount\":\"10\",\"invoice_amount\":\"10\"}}"
+      ]
+    },
+    {
+      "tx_hash": "FIXTURE-TX-08",
+      "receipt_id": "FIXTURE-RECEIPT-08",
+      "block_height": 250000141,
+      "block_timestamp_ns": "1794218541000000000",
+      "status": "failure",
+      "failure": "{\"ActionError\":{\"index\":0,\"kind\":{\"FunctionCallError\":{\"ExecutionError\":\"Smart contract panicked: ERR_IBAN_NOT_ALLOWED: iban\"}}}}",
+      "logs": [
+        "EVENT_JSON:{\"standard\":\"zold-mandate\",\"version\":\"1.0.0\",\"event\":\"payout_refused\",\"data\":{\"key\":{\"agent\":\"agent-1\",\"caller\":{\"kind\":\"agent\"},\"request_id\":\"old-108\"},\"supplier\":\"acme\",\"invoice_id\":\"INV-108\",\"reason\":\"ERR_IBAN_NOT_ALLOWED\"}}"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,23 @@
+│                       method name:  lookup
+├  Transaction Execution Info:
+│    Transaction ID: DWsi3ZgPaLsNkEJaf3fuMaDb7GX4v8AZhf7AxyxWwABY
+│    Logs [caller.nearh-cc2-ol-1794222360.testnet]:
+│      lookup 2 requested at block 276913260
+│    Logs [outlayer.testnet]:
+│      EVENT_JSON:{"standard":"near-outlayer","version":"1.0.0","event":"execution_requested","data":[{"request_data":"{\"request_id\":14624,\"sender_id\":\"nearh-cc2-ol-1794222360.testnet\",\"predecessor_id\":\"caller.nearh-cc2-ol-1794222360.testnet\",\"code_source\":{\"WasmUrl\":{\"url\":\"https://test.fastfs.io/nearh-cc2-ol-1794222360.testnet/outlayer.testnet/9e4ac160790d564d54711f34c9828fdff66dffd600db63905061fea3619e8f6f.wasm\",\"hash\":\"9e4ac160790d564d54711f34c9828fdff66dffd600db63905061fea3619e8f6f\",\"build_target\":\"wasm32-wasip2\"}},\"resource_limits\":{\"max_instructions\":1000000000,\"max_memory_mb\":128,\"max_execution_seconds\":30},\"input_data\":\"{\\\"payee\\\":\\\"payee-2\\\"}\",\"input_data_in_state\":false,\"secrets_ref\":{\"profile\":\"priv2s\",\"account_id\":\"nearh-cc2-ol-1794222360.testnet\"},\"response_format\":\"Json\",\"payment\":\"100000000000000000000000\",\"attached_usd\":\"0\",\"timestamp\":1794223205520907266,\"compile_only\":false,\"force_rebuild\":false,\"store_on_fastfs\":false,\"use_bound_identity\":false,\"project_uuid\":null,\"project_id\":null}","data_id":[253,190,115,104,233,143,152,49,103,7,254,173,178,234,80,95,120,140,125,20,217,200,213,207,230,190,211,235,205,162,85,84],"timestamp":1794223205520907266}]}
+│    Logs [outlayer.testnet]:
+│      [[yNEAR charged: "1024800000000000000000"]]
+│      EVENT_JSON:{"standard":"near-outlayer","version":"1.0.0","event":"execution_completed","data":[{"sender_id":"nearh-cc2-ol-1794222360.testnet","code_source":{"WasmUrl":{"url":"https://test.fastfs.io/nearh-cc2-ol-1794222360.testnet/outlayer.testnet/9e4ac160790d564d54711f34c9828fdff66dffd600db63905061fea3619e8f6f.wasm","hash":"9e4ac160790d564d54711f34c9828fdff66dffd600db63905061fea3619e8f6f","build_target":"wasm32-wasip2"}},"resources_used":{"instructions":93606,"time_ms":248,"compile_time_ms":null},"success":true,"error_message":null,"payment_charged":"1024800000000000000000","payment_refunded":"98975200000000000000000","compilation_note":"Cached WASM from 2026-11-09T11:15:25.591966+00:00","timestamp":1794223210406377692}]}
+│      Execution completed successfully. Output: Json(149 bytes), Resources: { instructions: 93606, time_ms: 248 }, Cost: 1024800000000000000000 yoctoNEAR, Refund: 98975200000000000000000 yoctoNEAR, Cached WASM from 2026-11-09T11:15:25.591966+00:00
+│    Logs [nearh-cc2-ol-1794222360.testnet]:   No logs
+│    Logs [nearh-cc2-ol-1794222360.testnet]:   No logs
+│    Logs [nearh-cc2-ol-1794222360.testnet]:   No logs
+│    Logs [nearh-cc2-ol-1794222360.testnet]:   No logs
+│    Logs [caller.nearh-cc2-ol-1794222360.testnet]:
+│      lookup 2 resolved at block 276913270 (10 blocks after request): {"commitment":"9bf9e0c97ca7fb4aa68f400e29a961091da05c976023d68a94d558e6f54e6074","country":"ZZ","found":true,"payee":"payee-2","secrets_loaded":true}
+│    Logs [nearh-cc2-ol-1794222360.testnet]:   No logs
+│    Logs [nearh-cc2-ol-1794222360.testnet]:   No logs
+Function execution return value (printed to stdout):
+{
+The "lookup" call to <caller.nearh-cc2-ol-1794222360.testnet> on behalf of <nearh-cc2-ol-1794222360.testnet> succeeded.
+wall_seconds=10.4 balance_before=6.9782195594939112 balance_after=6.9760933399883278

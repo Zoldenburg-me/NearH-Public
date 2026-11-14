@@ -1,0 +1,23 @@
+│                       method name:  lookup
+├  Transaction Execution Info:
+│    Transaction ID: D7nkKpDTpRMgSkc19r7wB2h9fFagwYWjzDojMrkbfGrj
+│    Logs [caller2.nearh-cc2-ol-1794222360.testnet]:
+│      lookup 1 requested at block 276914263
+│    Logs [outlayer.testnet]:
+│      EVENT_JSON:{"standard":"near-outlayer","version":"1.0.0","event":"execution_requested","data":[{"request_data":"{\"request_id\":14667,\"sender_id\":\"nearh-cc2-ol-1794222360.testnet\",\"predecessor_id\":\"caller2.nearh-cc2-ol-1794222360.testnet\",\"code_source\":{\"WasmUrl\":{\"url\":\"https://test.fastfs.io/nearh-cc2-ol-1794222360.testnet/outlayer.testnet/c33c5a59a8710fccaf35b3e0edd7308b4df8db60ef919a12bd13091594d45e28.wasm\",\"hash\":\"c33c5a59a8710fccaf35b3e0edd7308b4df8db60ef919a12bd13091594d45e28\",\"build_target\":\"wasm32-wasip2\"}},\"resource_limits\":{\"max_instructions\":1000000000,\"max_memory_mb\":128,\"max_execution_seconds\":30},\"input_data\":\"{\\\"payee\\\":\\\"payee-1\\\",\\\"nonce\\\":\\\"caller2.nearh-cc2-ol-1794222360.testnet:1\\\"}\",\"input_data_in_state\":false,\"secrets_ref\":{\"profile\":\"priv2s\",\"account_id\":\"nearh-cc2-ol-1794222360.testnet\"},\"response_format\":\"Json\",\"payment\":\"100000000000000000000000\",\"attached_usd\":\"0\",\"timestamp\":1794223800244783551,\"compile_only\":false,\"force_rebuild\":false,\"store_on_fastfs\":false,\"use_bound_identity\":false,\"project_uuid\":null,\"project_id\":null}","data_id":[222,250,132,15,154,21,135,250,97,231,55,213,162,110,13,26,8,81,154,20,104,91,104,41,233,202,170,122,64,250,54,199],"timestamp":1794223800244783551}]}
+│    Logs [outlayer.testnet]:
+│      [[yNEAR charged: "1035700000000000000000"]]
+│      EVENT_JSON:{"standard":"near-outlayer","version":"1.0.0","event":"execution_completed","data":[{"sender_id":"nearh-cc2-ol-1794222360.testnet","code_source":{"WasmUrl":{"url":"https://test.fastfs.io/nearh-cc2-ol-1794222360.testnet/outlayer.testnet/c33c5a59a8710fccaf35b3e0edd7308b4df8db60ef919a12bd13091594d45e28.wasm","hash":"c33c5a59a8710fccaf35b3e0edd7308b4df8db60ef919a12bd13091594d45e28","build_target":"wasm32-wasip2"}},"resources_used":{"instructions":200087,"time_ms":357,"compile_time_ms":null},"success":true,"error_message":null,"payment_charged":"1035700000000000000000","payment_refunded":"98964300000000000000000","compilation_note":"Cached WASM from 2026-11-09T11:29:15.641261+00:00","timestamp":1794223805089797143}]}
+│      Execution completed successfully. Output: Json(404 bytes), Resources: { instructions: 200087, time_ms: 357 }, Cost: 1035700000000000000000 yoctoNEAR, Refund: 98964300000000000000000 yoctoNEAR, Cached WASM from 2026-11-09T11:29:15.641261+00:00
+│    Logs [nearh-cc2-ol-1794222360.testnet]:   No logs
+│    Logs [nearh-cc2-ol-1794222360.testnet]:   No logs
+│    Logs [nearh-cc2-ol-1794222360.testnet]:   No logs
+│    Logs [nearh-cc2-ol-1794222360.testnet]:   No logs
+│    Logs [caller2.nearh-cc2-ol-1794222360.testnet]:
+│      lookup 1 resolved at block 276914273 (10 blocks after request), verified: REJECTED: bad signature: {"commitment":"6e2c351a38bc3dbacb7a1ed149904a30ba1a067536c008128c92ae04eb27b6e7","country":"ZZ","found":true,"nonce":"caller2.nearh-cc2-ol-1794222360.testnet:1","payee":"payee-1","pk":"62312c69d02acf6533bdd75ad80150c86dae83d6edd315b6d8aa72f5b3198b26","sig":"2b17be1b47e9e791e1a937227f4198e3d0634c03885548d0d3858cfe1b0ad121e8da1f01cb5e8d7f87c0d9b594c3a0c94c4b1652a81a0f61d93a55b1493e420b","sign_error":""}
+│    Logs [nearh-cc2-ol-1794222360.testnet]:   No logs
+│    Logs [nearh-cc2-ol-1794222360.testnet]:   No logs
+Function execution return value (printed to stdout):
+{
+The "lookup" call to <caller2.nearh-cc2-ol-1794222360.testnet> on behalf of <nearh-cc2-ol-1794222360.testnet> succeeded.
+wall_seconds=10.3 balance_before=3.95601373082708 balance_after=3.9538143554769055

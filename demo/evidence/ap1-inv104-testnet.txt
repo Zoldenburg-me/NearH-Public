@@ -1,0 +1,47 @@
+# AP1 INV-104 demo: NEAR TESTNET RUN
+# `pnpm demo:inv104 --testnet --write` at commit 7ac3613-dirty, 2026-11-14T08:34:15.592Z. Payouts were signed, not sent to Monerium.
+
+AP1 INV-104 demo: NEAR TESTNET RUN
+contract nearh-e2e-1794644865.testnet | agent agent-1 | supplier acme-1794645095 | submitter nearh-e2e-sub-1794644865.testnet
+IBAN A ****3000 | IBAN B ****5555 (last 4 only)
+
+[1] Owner sets the demo bank-change cooling-off to 60 s (passkey)
+  tx GrEnGamNFXR4XeYwoJTnE7uUHaRzEiM4PmWJUbnEFaSy
+  event bank_change_cooling_off_set reason=-                            data={"secs":60}
+  outcome: OK
+
+[2] Owner registers supplier acme-1794645095 (Acme GmbH, cap 50 EUR) at IBAN A ****3000 (passkey)
+  tx 3LwPMxsduwWMLabJvCUzQ1GMxXEZ3ZX9Xa5oDsawbz5B
+  event payee_added              reason=-                            data={"agent":"agent-1","payee":{"rail":"sepa","supplier":"acme-1794645095","name":"Acme GmbH","iban_commitment":"0xfa963cf49aba7765c95aa3691d958173ccae9023717866bc2b7f90e156e39708","cap":"50000000000000000000"}}
+  event supplier_iban_pending    reason=-                            data={"agent":"agent-1","supplier":"acme-1794645095","iban_commitment":"0xfa963cf49aba7765c95aa3691d958173ccae9023717866bc2b7f90e156e39708","effective_at":1794645196}
+  outcome: OK
+  IBAN A payable after the cooling-off
+
+[3] Agent pays INV-104, EUR 42.50, to IBAN A
+  tx E9UnmibPNf18hCrCcJyWbgHa7ehF15NN3ysADwyxzYT1
+  event payout_approved          reason=-                            data={"key":{"agent":"agent-1","caller":{"kind":"agent"},"request_id":"acme-1794645095-inv-104-a"},"supplier":"acme-1794645095","invoice_id":"INV-104","amount":"42.5","invoice_amount":"42.5"}
+  event signature_requested      reason=-                            data={"key":{"agent":"agent-1","caller":{"kind":"agent"},"request_id":"acme-1794645095-inv-104-a"},"shape":"payout","rail":"sepa","amount":"42500000000000000000","digest":"0x7262e1de9418a0ef953359ca4077cbddee2a2ff2474e078216a5fa60835cf9b8","valid_before":1794645439}
+  event signature_recorded       reason=-                            data={"key":{"agent":"agent-1","caller":{"kind":"agent"},"request_id":"acme-1794645095-inv-104-a"},"status":"signed","signature":{"r":"0x14ad386fc9e6e4f352aef3241b5c816a6ef03bffcf39fb6ec8bc698548ce00a8","s":"0x143f8cf4df54aceced6bf784f1c5e18ae654e053d76b9403d815647bb2a53815","v":28}}
+  reservation: signed
+  outcome: OK
+
+[4] "We changed banks" email: owner moves acme-1794645095 to IBAN B ****5555 (passkey)
+  tx EqhkiMNH3r2tTkWk6VUyNpVpFwWCnHczWbV1stsWdxYH
+  event supplier_iban_pending    reason=-                            data={"agent":"agent-1","supplier":"acme-1794645095","iban_commitment":"0x7a65ed43d8fd716f12658ea9d2e6f8a4cf812457af665e36c6f20b5330af9f12","effective_at":1794645279}
+  outcome: OK
+  get_suppliers: {"supplier":"acme-1794645095","name":"Acme GmbH","cap":"50000000000000000000","iban_commitment":"0xfa963cf49aba7765c95aa3691d958173ccae9023717866bc2b7f90e156e39708","pending":{"iban_commitment":"0x7a65ed43d8fd716f12658ea9d2e6f8a4cf812457af665e36c6f20b5330af9f12","effective_at":1794645279}}
+
+[5] Agent pays INV-105, EUR 10, to IBAN B during the cooling-off
+  48 s of the cooling-off left
+  tx Dn7x8AXGatXTSKrkY7pPBzNGgXkNdnY8Df3kabyQYasq
+  event payout_refused           reason=ERR_BANK_CHANGE_COOLING_OFF  data={"key":{"agent":"agent-1","caller":{"kind":"agent"},"request_id":"acme-1794645095-inv-105-b"},"supplier":"acme-1794645095","invoice_id":"INV-105","reason":"ERR_BANK_CHANGE_COOLING_OFF"}
+  outcome: REFUSED ERR_BANK_CHANGE_COOLING_OFF
+
+[6] Agent pays INV-104 again, EUR 42.50, to IBAN A
+  tx AWQxoxwLf3B5RBNJRFxG3ob6nFxX31AJLKanyAH3i3Nr
+  event payout_refused           reason=ERR_DUPLICATE_INVOICE        data={"key":{"agent":"agent-1","caller":{"kind":"agent"},"request_id":"acme-1794645095-inv-104-b"},"supplier":"acme-1794645095","invoice_id":"INV-104","reason":"ERR_DUPLICATE_INVOICE"}
+  outcome: REFUSED ERR_DUPLICATE_INVOICE
+  is_invoice_paid(acme-1794645095, INV-104) = true
+
+Result: INV-104 paid once; the new IBAN held during the cooling-off (ERR_BANK_CHANGE_COOLING_OFF); INV-104 again refused (ERR_DUPLICATE_INVOICE).
+Receipts for the AP2 CSV: pnpm record-receipts (in scripts/owner/near) per sender: nearh-e2e-sub-1794644865.testnet GrEnGamNFXR4XeYwoJTnE7uUHaRzEiM4PmWJUbnEFaSy, nearh-e2e-sub-1794644865.testnet 3LwPMxsduwWMLabJvCUzQ1GMxXEZ3ZX9Xa5oDsawbz5B, nearh-e2e-1794644865.testnet E9UnmibPNf18hCrCcJyWbgHa7ehF15NN3ysADwyxzYT1, nearh-e2e-sub-1794644865.testnet EqhkiMNH3r2tTkWk6VUyNpVpFwWCnHczWbV1stsWdxYH, nearh-e2e-1794644865.testnet Dn7x8AXGatXTSKrkY7pPBzNGgXkNdnY8Df3kabyQYasq, nearh-e2e-1794644865.testnet AWQxoxwLf3B5RBNJRFxG3ob6nFxX31AJLKanyAH3i3Nr

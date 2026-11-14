@@ -1,0 +1,13 @@
+{
+  "name": "nearh",
+  "private": true,
+  "packageManager": "pnpm@12.16.1",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "test": "node --test \"test/**/*.test.mjs\"",
+    "demo": "pnpm --filter @nearh/demo e1",
+    "demo:inv104": "pnpm --filter @nearh/demo inv104"
+  }
+}

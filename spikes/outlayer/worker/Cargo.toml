@@ -1,0 +1,17 @@
+[package]
+name = "ol-iban-worker"
+version = "0.1.0"
+edition = "2021"
+publish = false
+
+# Standalone spike: not a member of any root workspace.
+[workspace]
+
+[dependencies]
+serde_json = "1"
+sha2 = "0.10"
+
+[profile.release]
+opt-level = "s"
+lto = true
+strip = true

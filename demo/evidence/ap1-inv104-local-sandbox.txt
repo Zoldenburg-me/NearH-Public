@@ -1,0 +1,41 @@
+# AP1 INV-104 demo: LOCAL SANDBOX RUN, NOT TESTNET
+# near-workspaces sandbox, the harness's software P-256 key as the owner passkey, mock MPC signer,
+# fixture IBANs (last 4 only). No NEAR testnet, no Monerium, no funds.
+# `pnpm demo:inv104 --local --write` at commit ba8c7f9, 2026-11-09T17:26:20.347Z
+
+AP1 INV-104 demo: LOCAL SANDBOX RUN (near-workspaces), NOT TESTNET
+contract mandate.test.near | agent agent-1 | owner: software P-256 passkey | MPC: mock signer
+IBAN A ****3000 | IBAN B ****5555 (fixture IBANs, last 4 only)
+
+[1] Owner sets the demo bank-change cooling-off to 60 s (passkey)
+  event bank_change_cooling_off_set reason=-                            data={"secs":60}
+  outcome: OK
+
+[2] Owner registers supplier acme (Acme GmbH, cap 50 EUR) at IBAN A ****3000 (passkey)
+  event payee_added              reason=-                            data={"agent":"agent-1","payee":{"rail":"sepa","supplier":"acme","name":"Acme GmbH","iban_commitment":"0x3928e47fdb666aebe737af3235b7ad58a8f57a6d9f73f00e025e7e949165bf72","cap":"50000000000000000000"}}
+  event supplier_iban_pending    reason=-                            data={"agent":"agent-1","supplier":"acme","iban_commitment":"0x3928e47fdb666aebe737af3235b7ad58a8f57a6d9f73f00e025e7e949165bf72","effective_at":1794245232}
+  outcome: OK
+  (waited out the first IBAN's 60 s cooling-off)
+
+[3] Agent pays INV-104, EUR 42.50, to IBAN A
+  event payout_approved          reason=-                            data={"key":{"agent":"agent-1","caller":{"kind":"agent"},"request_id":"inv-104-a"},"supplier":"acme","invoice_id":"INV-104","amount":"42.5","invoice_amount":"42.5"}
+  event signature_requested      reason=-                            data={"key":{"agent":"agent-1","caller":{"kind":"agent"},"request_id":"inv-104-a"},"shape":"payout","rail":"sepa","amount":"42500000000000000000","digest":"0x52b268c539c044b59c46143e156f55b7b03d23dd1db90ecc9e502c369567fe5d","valid_before":1794245473}
+  event signature_recorded       reason=-                            data={"key":{"agent":"agent-1","caller":{"kind":"agent"},"request_id":"inv-104-a"},"status":"signed","signature":{"r":"0x5798e2854267913768b729ccdc80c494bb0336a05a0d1b69de4989415a0f0d1c","s":"0x366ce5c93fa52ffd42e89d891d9a2cd3f050f606257bb4a4fad609d4c268417c","v":27}}
+  outcome: OK
+  reservation: Signed (payout order signed by the MPC)
+
+[4] "We changed banks" email: owner moves acme to IBAN B ****5555 (passkey)
+  event supplier_iban_pending    reason=-                            data={"agent":"agent-1","supplier":"acme","iban_commitment":"0x78d04b9dd7afc5d52265a9be2473a60d88fa33f71ab86e3a362a92432c3ed17b","effective_at":1794245294}
+  outcome: OK
+  get_suppliers: [{"supplier":"acme","name":"Acme GmbH","cap":"50000000000000000000","iban_commitment":"0x3928e47fdb666aebe737af3235b7ad58a8f57a6d9f73f00e025e7e949165bf72","pending":{"iban_commitment":"0x78d04b9dd7afc5d52265a9be2473a60d88fa33f71ab86e3a362a92432c3ed17b","effective_at":1794245294}}]
+
+[5] Agent pays INV-105, EUR 10, to IBAN B during the cooling-off
+  event payout_refused           reason=ERR_BANK_CHANGE_COOLING_OFF  data={"key":{"agent":"agent-1","caller":{"kind":"agent"},"request_id":"inv-105-b"},"supplier":"acme","invoice_id":"INV-105","reason":"ERR_BANK_CHANGE_COOLING_OFF"}
+  outcome: REFUSED ERR_BANK_CHANGE_COOLING_OFF
+
+[6] Agent pays INV-104 again, EUR 42.50, to IBAN A
+  event payout_refused           reason=ERR_DUPLICATE_INVOICE        data={"key":{"agent":"agent-1","caller":{"kind":"agent"},"request_id":"inv-104-b"},"supplier":"acme","invoice_id":"INV-104","reason":"ERR_DUPLICATE_INVOICE"}
+  outcome: REFUSED ERR_DUPLICATE_INVOICE
+  is_invoice_paid(acme, INV-104) = true
+
+Result: INV-104 paid once; the new IBAN held during the cooling-off (ERR_BANK_CHANGE_COOLING_OFF); INV-104 again refused (ERR_DUPLICATE_INVOICE).

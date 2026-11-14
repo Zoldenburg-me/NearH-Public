@@ -1,0 +1,10 @@
+﻿# FIXTURE DATA: recorded example events, not a NEAR testnet run
+# Contract: fixture-mandate.testnet
+# Decision is the mandate contract's. An approved payout passed the contract's checks and went to the MPC for signing. It does not prove the bank transfer settled
+Date;Time (UTC);Supplier;IBAN (last 4);Invoice;Amount;Currency;Rail;NEAR tx;Payout id;Decision;Reason code
+09.11.2026;10:01:01;Acme GmbH;****3000;INV-104;42,50;EUR;SEPA;FIXTURE-TX-02;inv-104-a;approved;
+09.11.2026;10:01:15;Acme GmbH;****5555;INV-105;;EUR;SEPA;FIXTURE-TX-04;held-105;refused;ERR_BANK_CHANGE_COOLING_OFF
+09.11.2026;10:01:16;Acme GmbH;****3000;INV-104;;EUR;SEPA;FIXTURE-TX-05;again-104;refused;ERR_DUPLICATE_INVOICE
+09.11.2026;10:01:20;Acme GmbH;****3000;INV-106;1,00;EUR;SEPA;FIXTURE-TX-06;old-106;approved;
+09.11.2026;10:02:20;Acme GmbH;****5555;INV-107;10,00;EUR;SEPA;FIXTURE-TX-07;new-107;approved;
+09.11.2026;10:02:21;Acme GmbH;;INV-108;;EUR;SEPA;FIXTURE-TX-08;old-108;refused;ERR_IBAN_NOT_ALLOWED

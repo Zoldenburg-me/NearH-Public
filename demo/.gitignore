@@ -1,0 +1,4 @@
+# Private receipts contain payment instructions and supplier details.
+.runs/
+# Retained after uncertain payments; never remove without inspecting original records.
+.e1-*.lock

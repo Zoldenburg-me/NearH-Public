@@ -1,0 +1,1 @@
+{"signing_keys":[{"path":"priv2s","type":"ed25519","bind":"wasm","caller":"predecessor"}]}

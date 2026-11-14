@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>nearH dashboard</title>
+    <link rel="stylesheet" href="/style.css" />
+    <script type="module" src="/app.js"></script>
+  </head>
+  <body>
+    <header>
+      <h1>nearH dashboard</h1>
+      <span id="contract"></span>
+      <button id="refresh" type="button">Refresh</button>
+    </header>
+    <ul id="errors" role="alert"></ul>
+    <main>
+      <section>
+        <h2>Agents</h2>
+        <table id="agents"></table>
+      </section>
+      <section>
+        <h2>Mandates</h2>
+        <div id="mandates"></div>
+      </section>
+      <section>
+        <h2>Requests by status</h2>
+        <ul id="counts"></ul>
+        <p class="note">
+          <b>blocked</b> lists held items the owner rejected. Requests the contract refuses (over budget, unknown payee, …) panic and leave no
+          on-chain record, so they are not listed.
+        </p>
+        <table id="requests"></table>
+      </section>
+      <section>
+        <h2>Resolve unknown</h2>
+        <table id="unknown"></table>
+      </section>
+      <section>
+        <h2>Held queue</h2>
+        <p id="held-file" class="note"></p>
+        <div id="held"></div>
+      </section>
+    </main>
+  </body>
+</html>
