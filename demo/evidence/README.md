@@ -6,14 +6,15 @@
 
 ## E1 live run (NEAR testnet, Base Sepolia, Monerium sandbox)
 
-[e1-4522641b-ff25-4d33-9e0a-b32850f5975a.json](e1-4522641b-ff25-4d33-9e0a-b32850f5975a.json): `pnpm demo --run`, `complete: true`, on contract `nearh-e2e-1794644865.testnet` with agent-3. Each record carries its NEAR or Base Sepolia tx hash, request id or Monerium order id; no keys, tokens or IBANs.
+[e1-d1ca04a8-4ef4-4a6d-8f9a-faccd15173a3.json](e1-d1ca04a8-4ef4-4a6d-8f9a-faccd15173a3.json): `pnpm demo --run`, `complete: true`, on contract `nearh-e2e-1794644865.testnet` with agent-4 and the AI scam check on (`NEAR_AI_API_KEY` set, model `deepseek-ai/DeepSeek-V4.1-Flash-1017`). An earlier run of the same day with agent-3 and the scam check skipped is [e1-4522641b-ff25-4d33-9e0a-b32850f5975a.json](e1-4522641b-ff25-4d33-9e0a-b32850f5975a.json). Each record carries its NEAR or Base Sepolia tx hash, request id or Monerium order id; no keys, tokens or IBANs.
 
 - Owner: `set_mandate`, then USDC and EURe top-ups from the Safe `0x262F…83AF` to the agent EOA.
 - Agent: one x402 purchase, settled in USDC; one EUR 1.00 SEPA payout order submitted to the Monerium sandbox (not bank settlement).
+- Held by the scam check: a SEPA payout to a changed bank account with urgent wording (`poisoned-invoice`, `held`, verdict "urgency wording in invoice text"); nothing was signed and no request reached the contract. The two real payments above passed the check.
 - Refused by the contract: a payment to an unlisted payee (`ERR_PAYEE_NOT_ALLOWED`), a second request while the first was still pending (`ERR_OVER_BUDGET`), and a payment after the owner's revoke.
 - Sweeps: the agent's USDC (owner-requested, submitted by the relayer) and EURe (relayer-requested, gas funded by the relayer) back to the Safe.
 
-How it differs from the target setup: owner NEAR calls were signed with the software owner key from `pnpm keygen`, not a browser passkey; the Safe is an ordinary Safe v1.4.1 whose top-ups were executed by a throwaway EOA added as an owner, not the passkey Safe of scripts/owner/safe; the relayer NEAR account is the submitter account; the AI scam check was skipped (no `NEAR_AI_API_KEY`). A first attempt stopped at the SEPA step because M1 read the reservation at `final` before the MPC signature was final (`M1_NOT_SIGNED`); M1 now re-reads a pending reservation for up to ~10 s.
+How it differs from the target setup: owner NEAR calls were signed with the software owner key from `pnpm keygen`, not a browser passkey; the Safe is an ordinary Safe v1.4.1 whose top-ups were executed by a throwaway EOA added as an owner, not the passkey Safe of scripts/owner/safe; the relayer NEAR account is the submitter account. With the scam check first switched on, every payment was held with "Empty response from NEAR AI": the reasoning model spent the 200-token limit before answering. The request now sends `max_tokens: 1024` and `reasoning_effort: "none"`. In the agent-3 run, a first attempt stopped at the SEPA step because M1 read the reservation at `final` before the MPC signature was final (`M1_NOT_SIGNED`); M1 now re-reads a pending reservation for up to ~10 s.
 
 ## AP2 accountant export: fixture data, not a testnet run
 

@@ -1,0 +1,115 @@
+{
+  "network": "NEAR testnet / Base Sepolia / Monerium sandbox",
+  "complete": true,
+  "records": [
+    {
+      "step": "start",
+      "result": "Full testnet demo started"
+    },
+    {
+      "step": "set_mandate",
+      "result": "Owner transaction confirmed",
+      "near_tx_hash": "8XGMXaKrGj7o9ChLEjfWJa8AXr3cKR8db5iCPcCRSXAm"
+    },
+    {
+      "step": "mandate",
+      "result": "State confirmed; SHA256 7472cfe1d45c3a96eef07c27e7ad3bffca4c21290627800dfad81a35afd40c9e"
+    },
+    {
+      "step": "topup-usdc",
+      "result": "Matching Safe-to-agent transfer confirmed",
+      "tx_hash": "0x686ec571e6e02235f155226a01036ab7a37056a6fb0394516350d0abc8b2d2f2"
+    },
+    {
+      "step": "topup-eure",
+      "result": "Matching Safe-to-agent transfer confirmed",
+      "tx_hash": "0x6496c7c616de98424b3cd2a3694129527df638e5114f89a281a8d4a1074a6d77"
+    },
+    {
+      "step": "x402-request",
+      "result": "paid",
+      "request_id": "pay-730c6ca9-7405-41d4-9372-7e86b84d9f98",
+      "tx_hash": "0x2c501f5823a8bc61ba9f59d1930de45fc3652b293f7b2f73d5e4fd6fb11f0d56"
+    },
+    {
+      "step": "x402",
+      "result": "Signature, authorization use, USDC transfer and resource verified",
+      "request_id": "pay-730c6ca9-7405-41d4-9372-7e86b84d9f98",
+      "near_tx_hash": "DgTniYxbDbSjma4KJvJLcgcrKGUe3TMKmfABkjfiTDSd",
+      "tx_hash": "0x2c501f5823a8bc61ba9f59d1930de45fc3652b293f7b2f73d5e4fd6fb11f0d56",
+      "resource_sha256": "41083bca75b4e33658517533ec2f1886b7dd874e6ccb6694a3901f4d993fbfd4"
+    },
+    {
+      "step": "sepa-request",
+      "result": "submitted",
+      "request_id": "pay-1b429e79-b26b-4f7c-bfbf-3a650c7510c5",
+      "monerium_order_id": "b5ace054-99a7-494a-9536-cf9f800c096c"
+    },
+    {
+      "step": "sepa",
+      "result": "Submitted to Monerium sandbox; not bank settlement",
+      "request_id": "pay-1b429e79-b26b-4f7c-bfbf-3a650c7510c5",
+      "near_tx_hash": "6AAjtUctknjoeAp8Pe9usjMVTtmb28UF1cbTzSnoMx5f",
+      "monerium_order_id": "b5ace054-99a7-494a-9536-cf9f800c096c"
+    },
+    {
+      "step": "poisoned-invoice",
+      "result": "held",
+      "request_id": "pay-9938c1c3-332d-4447-a99f-3b34c8bcd61e"
+    },
+    {
+      "step": "recipient-attempt",
+      "result": "Contract rejection probe; never sent to a payment rail",
+      "request_id": "reject-d1ca04a8-4ef4-4a6d-8f9a-faccd15173a3"
+    },
+    {
+      "step": "recipient-rejection",
+      "result": "No payment submitted",
+      "request_id": "reject-d1ca04a8-4ef4-4a6d-8f9a-faccd15173a3",
+      "near_tx_hash": "D2LDMEvfagrWrhpNgCsnhmtunfsZszLtQPbAxtBdEGCh",
+      "error_code": "ERR_PAYEE_NOT_ALLOWED"
+    },
+    {
+      "step": "set_mandate",
+      "result": "Owner transaction confirmed",
+      "near_tx_hash": "GhdosVJpjRHukuLcRJgMM8d8cQGsNtWAnmkKFY7b2x5Y"
+    },
+    {
+      "step": "pending-attempt",
+      "result": "Signature only; never submitted to a rail",
+      "request_id": "pending-d1ca04a8-4ef4-4a6d-8f9a-faccd15173a3"
+    },
+    {
+      "step": "pending-observed",
+      "result": "Actual pending reservation observed on NEAR testnet",
+      "request_id": "pending-d1ca04a8-4ef4-4a6d-8f9a-faccd15173a3"
+    },
+    {
+      "step": "budget-rejection",
+      "result": "Second request refused after observed pending reservation",
+      "request_id": "budget-d1ca04a8-4ef4-4a6d-8f9a-faccd15173a3",
+      "near_tx_hash": "8Y364QEpMub11rLZv7GwNFFU7qx3iHgsXif5EGqFqRnk",
+      "error_code": "ERR_OVER_BUDGET"
+    },
+    {
+      "step": "revoke",
+      "result": "Owner transaction confirmed",
+      "near_tx_hash": "9crhdsZ3kKvwu6CZLAz9HCbGqrKnF7cWupyA69Dv4wLt"
+    },
+    {
+      "step": "revoked-payment",
+      "result": "Subsequent signature refused; no reservation or rail submission",
+      "request_id": "revoked-d1ca04a8-4ef4-4a6d-8f9a-faccd15173a3"
+    },
+    {
+      "step": "sweep-usdc",
+      "result": "Matching agent-to-Safe transfer confirmed",
+      "tx_hash": "0xe9b3c2491ab0f3b66dd1dcdc810663ce874ac3364fcc133173457ad3fb79d48b"
+    },
+    {
+      "step": "sweep-eure",
+      "result": "Matching agent-to-Safe transfer confirmed",
+      "tx_hash": "0x5df5d09d185c42b3b9b6fefa30e40c9e744cf05506df4f5241df41e964dc89c9"
+    }
+  ]
+}

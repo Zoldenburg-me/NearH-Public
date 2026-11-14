@@ -17,12 +17,13 @@ Each row is a transaction on NEAR testnet, sent with the agent's own key: what a
 |---|---|---|
 | "We changed banks": pay the supplier's new IBAN right after the change | refused, `ERR_BANK_CHANGE_COOLING_OFF` | [`Dn7x8A…`](https://testnet.nearblocks.io/txns/Dn7x8AXGatXTSKrkY7pPBzNGgXkNdnY8Df3kabyQYasq) |
 | The same invoice sent a second time | refused, `ERR_DUPLICATE_INVOICE` | [`AWQxox…`](https://testnet.nearblocks.io/txns/AWQxoxwLf3B5RBNJRFxG3ob6nFxX31AJLKanyAH3i3Nr) |
-| A poisoned invoice that names a payee not on the list | refused, `ERR_PAYEE_NOT_ALLOWED` | [`4CSsAU…`](https://testnet.nearblocks.io/txns/4CSsAUYNv2yQCmercj7PFbryFhtafL3K7dTP9886odJJ) |
-| Another payment while the budget is already reserved | refused, `ERR_OVER_BUDGET` | [`9YiBNW…`](https://testnet.nearblocks.io/txns/9YiBNWgKDBPw1jQdskBirtzXAU1AddGocV18SL6Z2yQK) |
+| An urgent "pay this changed bank account" invoice, with the AI scam check on | held for the owner before any signing (`urgency wording in invoice text`) | none: it never reached the contract (request `pay-9938c1c3…` in the E1 record) |
+| A poisoned invoice that names a payee not on the list | refused, `ERR_PAYEE_NOT_ALLOWED` | [`D2LDME…`](https://testnet.nearblocks.io/txns/D2LDMEvfagrWrhpNgCsnhmtunfsZszLtQPbAxtBdEGCh) |
+| Another payment while the budget is already reserved | refused, `ERR_OVER_BUDGET` | [`8Y364Q…`](https://testnet.nearblocks.io/txns/8Y364QEpMub11rLZv7GwNFFU7qx3iHgsXif5EGqFqRnk) |
 | A payment above the per-payment cap, with the AI scam check bypassed | refused, `ERR_OVER_PER_PAYMENT_CAP` | [`5JYnwQ…`](https://testnet.nearblocks.io/txns/5JYnwQtDLmV2zwB8jXqrZGbymKqH8D8ua457DQSPCome) (nearh-paypal's contract, the same mandate engine) |
-| Keep paying after the owner revokes | the revoke clears the mandate and deletes the agent's key, so the next request cannot be signed | [`C4QJp3…`](https://testnet.nearblocks.io/txns/C4QJp3NdTAG81U86pBYRLKtLLUHQ5U8REL39SQx35Bss) (the revoke) |
+| Keep paying after the owner revokes | the revoke clears the mandate and deletes the agent's key, so the next request cannot be signed | [`9crhds…`](https://testnet.nearblocks.io/txns/9crhdsZ3kKvwu6CZLAz9HCbGqrKnF7cWupyA69Dv4wLt) (the revoke) |
 
-The first two rows are from the [AP1 testnet run](demo/evidence/ap1-inv104-testnet.txt), the next two and the revoke from the [E1 live run](demo/evidence/README.md#e1-live-run-near-testnet-base-sepolia-monerium-sandbox), and the cap row from the [IronClaw run](demo/evidence/ironclaw-live.md). What each run did not cover is under [Status](#status).
+The first two rows are from the [AP1 testnet run](demo/evidence/ap1-inv104-testnet.txt), the next three and the revoke from the [E1 live run](demo/evidence/README.md#e1-live-run-near-testnet-base-sepolia-monerium-sandbox), and the cap row from the [IronClaw run](demo/evidence/ironclaw-live.md). What each run did not cover is under [Status](#status).
 
 ## Try it
 From a fresh clone, with no `.env` and no accounts.
@@ -91,7 +92,7 @@ Every claim below links to its transcript or record in [demo/evidence](demo/evid
 | The bank-change story, `pnpm demo:inv104` | local sandbox | [ap1-inv104-local-sandbox.txt](demo/evidence/ap1-inv104-local-sandbox.txt) |
 | The bank-change story, `pnpm demo:inv104 --testnet` (AP1): INV-104 paid once, the bank change held by the cooling-off, the duplicate refused | NEAR testnet | [ap1-inv104-testnet.txt](demo/evidence/ap1-inv104-testnet.txt) |
 | The relayer legs | NEAR testnet, Base Sepolia | [relayer/LIVE.md](relayer/LIVE.md) |
-| The end-to-end run, `pnpm demo --run` (E1), on contract `nearh-e2e-1794644865.testnet`, agent-3 | NEAR testnet, Base Sepolia, Monerium sandbox | [E1 live run](demo/evidence/README.md#e1-live-run-near-testnet-base-sepolia-monerium-sandbox) |
+| The end-to-end run, `pnpm demo --run` (E1), on contract `nearh-e2e-1794644865.testnet`, agent-4, with the AI scam check on | NEAR testnet, Base Sepolia, Monerium sandbox | [E1 live run](demo/evidence/README.md#e1-live-run-near-testnet-base-sepolia-monerium-sandbox) |
 | IronClaw as the agent | NEAR AI Cloud, NEAR testnet, PayPal sandbox | [ironclaw-live.md](demo/evidence/ironclaw-live.md) |
 
 **What the live runs did, and where they differ from the target setup**
@@ -99,7 +100,7 @@ Every claim below links to its transcript or record in [demo/evidence](demo/evid
   - It ran Safe top-ups, one x402 payment settled in USDC, and one EUR 1.00 SEPA payout order submitted to the Monerium sandbox (sandbox, not bank settlement).
   - The contract refused an unlisted payee, an over-budget request and a payment after revoke. Then both floats were swept back to the Safe.
   - Owner calls were signed with the software owner key, not a browser passkey. The Safe top-ups were made by a throwaway EOA added as a Safe owner.
-  - The AI scam check was skipped (no `NEAR_AI_API_KEY`); the contract refused the payee anyway.
+  - The AI scam check was on (NEAR AI Cloud, `deepseek-ai/DeepSeek-V4.1-Flash-1017`). It passed the two real payments and held the poisoned bank-change invoice before any signing; the contract then refused the unlisted payee on its own.
 - **AP1 on testnet:** payouts were signed by the MPC, not sent to Monerium.
 - **IronClaw:**
   - IronClaw on NEAR AI Cloud paid one PayPal-sandbox invoice through the buyer MCP over `--http`.
